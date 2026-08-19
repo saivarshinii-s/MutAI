@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
 import os
 
 # ============================================================
@@ -76,8 +76,7 @@ INFO_PATH = os.path.join(BASE_DIR, "model_info.pkl")
 
 @st.cache_resource
 def load_pickle(path):
-    with open(path, "rb") as f:
-        return pickle.load(f)
+   return joblib.load(path)
 
 try:
     model = load_pickle(MODEL_PATH)
