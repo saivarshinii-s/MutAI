@@ -1,4 +1,4 @@
-
+joblib
 streamlit
 pandas
 numpy
