@@ -8,6 +8,17 @@ import json
 import zipfile
 
 # ============================================================
+# STRUCTURAL ANALYSIS FILES
+# ============================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+ALPHAFOLD_ZIP = os.path.join(BASE_DIR, "AlphaFold_MutAI.zip")
+DYNAMUT2_PDB = os.path.join(BASE_DIR, "1cei_DynaMut2.pdb")
+FOLDX_REPAIR_PDB = os.path.join(BASE_DIR, "1cei_Repair.pdb")
+FOLDX_REPAIR_FXOUT = os.path.join(BASE_DIR, "1cei_Repair.fxout")
+
+# ============================================================
 # PAGE CONFIG
 # ============================================================
 
@@ -290,6 +301,71 @@ st.info(
 )
 
 st.divider()
+
+# ============================================================
+# STRUCTURAL ANALYSIS
+# ============================================================
+
+st.divider()
+
+st.header("🧬 Structural Analysis")
+
+st.subheader("🧪 FoldX")
+
+if os.path.exists(FOLDX_REPAIR_PDB):
+    st.success("✅ FoldX repaired structure available")
+    st.write("Repaired protein structure: `1cei_Repair.pdb`")
+
+    with open(FOLDX_REPAIR_PDB, "rb") as f:
+        st.download_button(
+            "⬇️ Download FoldX Repaired Structure",
+            f,
+            file_name="1cei_Repair.pdb"
+        )
+else:
+    st.warning("FoldX repaired structure not found.")
+
+if os.path.exists(FOLDX_REPAIR_FXOUT):
+    st.success("✅ FoldX output available")
+
+    with open(FOLDX_REPAIR_FXOUT, "rb") as f:
+        st.download_button(
+            "⬇️ Download FoldX Output",
+            f,
+            file_name="1cei_Repair.fxout"
+        )
+else:
+    st.warning("FoldX output not found.")
+
+
+st.subheader("🧬 DynaMut2")
+
+if os.path.exists(DYNAMUT2_PDB):
+    st.success("✅ DynaMut2 structure available")
+
+    with open(DYNAMUT2_PDB, "rb") as f:
+        st.download_button(
+            "⬇️ Download DynaMut2 Structure",
+            f,
+            file_name="1cei_DynaMut2.pdb"
+        )
+else:
+    st.warning("DynaMut2 structure not found.")
+
+
+st.subheader("🔬 AlphaFold")
+
+if os.path.exists(ALPHAFOLD_ZIP):
+    st.success("✅ AlphaFold integration files available")
+
+    with open(ALPHAFOLD_ZIP, "rb") as f:
+        st.download_button(
+            "⬇️ Download AlphaFold Files",
+            f,
+            file_name="AlphaFold_MutAI.zip"
+        )
+else:
+    st.warning("AlphaFold files not found.")
 # ============================================================
 # ALPHAFOLD STRUCTURAL ANALYSIS
 # ============================================================
