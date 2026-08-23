@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+import json
+import zipfile
 
 # ============================================================
 # PAGE CONFIG
@@ -288,6 +290,106 @@ st.info(
 )
 
 st.divider()
+# ============================================================
+# ALPHAFOLD STRUCTURAL ANALYSIS
+# ============================================================
+
+st.divider()
+
+st.subheader("🧬 AlphaFold Structural Analysis")
+
+st.write(
+    "AlphaFold is used to provide predicted protein structural information "
+    "for downstream mutation analysis."
+)
+
+ALPHAFOLD_ZIP = os.path.join(BASE_DIR, "AlphaFold_MutAI.zip")
+
+if os.path.exists(ALPHAFOLD_ZIP):
+
+    st.success("✅ AlphaFold integration files detected.")
+
+    try:
+        with zipfile.ZipFile(ALPHAFOLD_ZIP, "r") as z:
+
+            files = z.namelist()
+
+            fasta_file = None
+            status_file = None
+
+            for file in files:
+
+                if file.endswith("wild_type.fasta"):
+                    fasta_file = file
+
+                if file.endswith("alphafold_status.json"):
+                    status_file = file
+
+            # ------------------------------------------------
+            # ALPHAFOLD STATUS
+            # ------------------------------------------------
+
+            if status_file:
+
+                status_data = json.loads(
+                    z.read(status_file).decode("utf-8")
+                )
+
+                st.markdown("### 🔬 AlphaFold Integration Status")
+
+                st.json(status_data)
+
+            # ------------------------------------------------
+            # WILD TYPE FASTA
+            # ------------------------------------------------
+
+            if fasta_file:
+
+                fasta_content = (
+                    z.read(fasta_file)
+                    .decode("utf-8")
+                )
+
+                st.markdown("### 🧬 Wild-Type Protein Sequence")
+
+                st.code(
+                    fasta_content,
+                    language="text"
+                )
+
+                st.download_button(
+                    label="⬇️ Download FASTA",
+                    data=fasta_content,
+                    file_name="wild_type.fasta",
+                    mime="text/plain"
+                )
+
+            # ------------------------------------------------
+            # FILE LIST
+            # ------------------------------------------------
+
+            st.markdown("### 📁 AlphaFold Files")
+
+            for file in files:
+                st.write(f"• {file}")
+
+            st.info(
+                "AlphaFold input preparation is complete. "
+                "A predicted structure can be added when the "
+                "appropriate AlphaFold runtime is available."
+            )
+
+    except Exception as e:
+
+        st.error("⚠️ Could not read AlphaFold integration files.")
+
+        st.code(str(e))
+
+else:
+
+    st.warning(
+        "⚠️ AlphaFold integration files were not found."
+    )
 
 # ============================================================
 # FOOTER
